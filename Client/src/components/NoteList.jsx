@@ -1,12 +1,37 @@
 import React, { useState } from "react";
-import { Card, CardContent, Grid, List, Typography } from "@mui/material";
-import { Link, Outlet, useLoaderData, useParams } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  List,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useParams,
+  useSubmit,
+} from "react-router-dom";
 import { Box } from "@mui/system";
-
+import { HiOutlineDocumentAdd } from "react-icons/hi";
 export default function NoteList() {
-  const { folderId } = useParams();
+  const { folderId, noteId } = useParams();
   const [activeFolderId, setActiveFolderId] = useState(folderId);
   const { folder } = useLoaderData();
+  const submit = useSubmit();
+
+  const handleAddNewNote = () => {
+    submit(
+      {
+        content: "",
+        folderId,
+      },
+      { method: "POST", action: `/folders/${folderId}` }
+    );
+  };
 
   return (
     <Grid container height="100%">
@@ -25,8 +50,19 @@ export default function NoteList() {
       >
         <List
           subheader={
-            <Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <Typography sx={{ fontWeight: "bold" }}>Notes</Typography>
+              <Tooltip title="Add Note" onClick={handleAddNewNote}>
+                <IconButton size="small">
+                  <HiOutlineDocumentAdd className="fs-5" />
+                </IconButton>
+              </Tooltip>
             </Box>
           }
         >
