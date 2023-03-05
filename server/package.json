@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "server.js",
+  "main": "server.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.mjs"
   },
   "keywords": [],
   "author": "",
@@ -27,5 +27,9 @@
     "mongoose": "^7.0.0",
     "nodemon": "^2.0.20",
     "ws": "^8.12.1"
+  },
+  "engines": {
+    "node": ">=14 <15"
   }
+
 }
