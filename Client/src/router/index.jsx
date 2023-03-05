@@ -6,7 +6,12 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import { folderLoader } from "../utils/folderUtils";
-import { addNewNote, noteLoader, notesLoader } from "../utils/noteUtils";
+import {
+  addNewNote,
+  noteLoader,
+  notesLoader,
+  updateNote,
+} from "../utils/noteUtils";
 import ProtectedRoute from "./ProtectedRoute";
 
 const AuthLayout = () => {
@@ -43,6 +48,7 @@ export default createBrowserRouter([
                   {
                     element: <Note />,
                     path: `note/:noteId`,
+                    action: updateNote,
                     loader: noteLoader,
                   },
                 ],

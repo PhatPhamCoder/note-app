@@ -5,8 +5,8 @@ import NewFolder from "./NewFolder";
 
 export default function FolderList({ folders }) {
   const { folderId } = useParams();
-  console.log(folderId);
   const [activeFolderId, setActiveFolderId] = useState(folderId);
+
   return (
     <List
       sx={{
@@ -49,7 +49,8 @@ export default function FolderList({ folders }) {
             <Card
               sx={{
                 mb: "5px",
-                bgcolor: id === activeFolderId ? "rgb(255 211 240)" : null,
+                backgroundColor:
+                  id === activeFolderId ? "rgb(255 211 240)" : null,
               }}
             >
               <CardContent

@@ -51,7 +51,7 @@ export default function NewFolder() {
   }, [popupName]);
 
   return (
-    <div>
+    <>
       <Tooltip title="Add Folder" onClick={handleOpenPopup}>
         <AiOutlineFolderAdd
           className="fs-4 text-white cursor-pointer"
@@ -79,6 +79,6 @@ export default function NewFolder() {
           <Button onClick={handleAddNewFolder}>OK</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

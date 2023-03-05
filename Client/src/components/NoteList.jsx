@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,20 +8,36 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import moment from "moment";
 import {
   Link,
   Outlet,
   useLoaderData,
+  useNavigate,
   useParams,
   useSubmit,
 } from "react-router-dom";
 import { Box } from "@mui/system";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
+
 export default function NoteList() {
   const { folderId, noteId } = useParams();
-  const [activeFolderId, setActiveFolderId] = useState(folderId);
+  const [activeNoteId, setActiveNoteId] = useState(noteId);
   const { folder } = useLoaderData();
   const submit = useSubmit();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (noteId) {
+      setActiveNoteId(noteId);
+      return;
+    }
+
+    if (folder?.notes?.[0]) {
+      navigate(`note/${folder.notes[0].id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId, folder.notes]);
 
   const handleAddNewNote = () => {
     submit(
@@ -29,7 +45,10 @@ export default function NoteList() {
         content: "",
         folderId,
       },
-      { method: "POST", action: `/folders/${folderId}` }
+      {
+        method: "post",
+        action: `/folders/${folderId}`,
+      }
     );
   };
 
@@ -60,24 +79,25 @@ export default function NoteList() {
               <Typography sx={{ fontWeight: "bold" }}>Notes</Typography>
               <Tooltip title="Add Note" onClick={handleAddNewNote}>
                 <IconButton size="small">
-                  <HiOutlineDocumentAdd className="fs-5" />
+                  <HiOutlineDocumentAdd className="fs-4" />
                 </IconButton>
               </Tooltip>
             </Box>
           }
         >
-          {folder.notes.map(({ id, content }) => {
+          {folder.notes.map(({ id, content, updatedAt }) => {
             return (
               <Link
                 key={id}
                 to={`note/${id}`}
                 style={{ textDecoration: "none" }}
-                onClick={() => setActiveFolderId(id)}
+                onClick={() => setActiveNoteId(id)}
               >
                 <Card
                   sx={{
                     mb: "5px",
-                    bgcolor: id === activeFolderId ? "rgb(255 211 240)" : null,
+                    backgroundColor:
+                      id === activeNoteId ? "rgb(255 211 240)" : null,
                   }}
                 >
                   <CardContent
@@ -90,6 +110,9 @@ export default function NoteList() {
                       }}
                     />
                   </CardContent>
+                  <Typography sx={{ fontSize: "10px", margin: "10px" }}>
+                    {moment(updatedAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  </Typography>
                 </Card>
               </Link>
             );

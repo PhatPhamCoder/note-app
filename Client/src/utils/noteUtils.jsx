@@ -27,6 +27,7 @@ export const noteLoader = async ({ params: { noteId } }) => {
     note(noteId: $noteId) {
       content
       id
+      updatedAt
     }
   }`;
 
@@ -41,16 +42,18 @@ export const noteLoader = async ({ params: { noteId } }) => {
 
 export const addNewNote = async ({ params, request }) => {
   const newNote = await request.formData();
+  console.log({ newNote });
   const formDataObj = {};
   newNote.forEach((value, key) => (formDataObj[key] = value));
 
   console.log({ newNote, formDataObj });
-  const query = `mutation Mutation($content: String!, $folderIdL ID!) {
-    addNote(content: $content!, folderId: $folderId) {
-      id,
-      content
-    }
-  }`;
+
+  const query = `mutation Mutation($content: String!, $folderId: ID!) {
+      addNote(content: $content, folderId: $folderId) {
+        id
+        content
+      }
+    }`;
 
   const { addNote } = await graphQlRequest({
     query,
@@ -58,5 +61,31 @@ export const addNewNote = async ({ params, request }) => {
   });
 
   console.log({ addNote });
+
   return addNote;
+};
+
+export const updateNote = async ({ params, request }) => {
+  const updatedNote = await request.formData();
+  console.log({ updatedNote });
+  const formDataObj = {};
+  updatedNote.forEach((value, key) => (formDataObj[key] = value));
+
+  console.log({ updatedNote, formDataObj });
+
+  const query = `mutation Mutation($id: String!, $content: String!) {
+      updateNote(id: $id, content: $content) {
+        id
+        content
+      }
+    }`;
+
+  const { updateNote } = await graphQlRequest({
+    query,
+    variables: formDataObj,
+  });
+
+  console.log({ updateNote });
+
+  return updateNote;
 };

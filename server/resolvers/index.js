@@ -1,7 +1,16 @@
-import fakeData from "../fakeData/index.js";
 import { AuthorModel, FolderModel, NoteModel } from "../models/index.js";
+import { GraphQLScalarType } from "graphql";
 
 export const resolvers = {
+  Date: new GraphQLScalarType({
+    name: "Date",
+    parseValue(value) {
+      return new Date(value);
+    },
+    serialize(value) {
+      return value.toISOString();
+    },
+  }),
   Query: {
     folders: async (parent, args, context) => {
       const folders = await FolderModel.find({
@@ -9,20 +18,20 @@ export const resolvers = {
       }).sort({
         updatedAt: "desc",
       });
-      console.log({ folders, context });
+      // console.log({ folders, context });
       return folders;
     },
     folder: async (parent, args) => {
       const folderId = args.folderId;
-      console.log({ folderId });
-      const foundFolder = await FolderModel.findOne({
-        _id: folderId,
-      });
+      // console.log({ folderId });
+      const foundFolder = await FolderModel.findById(folderId);
       return foundFolder;
     },
-    note: (parent, args) => {
+    note: async (parent, args) => {
       const noteId = args.noteId;
-      return fakeData.notes.find((note) => note.id === noteId);
+      const note = await NoteModel.findById(noteId);
+      return note;
+      // return fakeData.notes.find((note) => note.id === noteId);
     },
   },
   Folder: {
@@ -36,7 +45,13 @@ export const resolvers = {
     },
     notes: async (parent, args) => {
       console.log({ parent });
-      return fakeData.notes.filter((notes) => notes.folderId === parent.id);
+      const notes = await NoteModel.find({
+        folderId: parent.id,
+      }).sort({
+        updatedAt: "desc",
+      });
+      console.log({ notes });
+      return notes;
     },
   },
   Mutation: {
@@ -45,9 +60,14 @@ export const resolvers = {
       await newNote.save();
       return newNote;
     },
+    updateNote: async (parent, args) => {
+      const noteId = args.id;
+      const note = await NoteModel.findByIdAndUpdate(noteId, args);
+      return note;
+    },
     addFolder: async (parent, args, context) => {
       const newFolder = new FolderModel({ ...args, authorId: context.uid });
-      console.log({ newFolder });
+      // console.log({ newFolder });
       await newFolder.save();
       return newFolder;
     },
