@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
 import FolderList from "../components/FolderList";
-import NoteList from "../components/NoteList";
+import PushNotification from "../components/PushNotification";
 import UserMenu from "../components/UserMenu";
 
 export default function Home() {
@@ -18,8 +18,17 @@ export default function Home() {
         >
           App Note 2023
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "right", mb: "10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "right",
+            alignItems: "center",
+            mb: "10px",
+            gap: "3px",
+          }}
+        >
           <UserMenu />
+          <PushNotification />
         </Box>
 
         <Grid
